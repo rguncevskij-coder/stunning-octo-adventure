@@ -1,1 +1,24 @@
 
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="background: #000; color: #0f0; text-align: center; font-family: sans-serif;">
+    <h1>AI GENERATOR</h1>
+    <input type="text" id="i" placeholder="Prompt (English)..." style="width:80%; padding:10px;">
+    <br><br>
+    <button onclick="g()" style="padding:15px 30px; background:#0f0; border:none; font-weight:bold;">ПУСК</button>
+    <div id="out" style="margin-top:20px;"></div>
+    <script>
+        function g(){
+            const t = document.getElementById('i').value;
+            const o = document.getElementById('out');
+            if(!t) return alert('Enter text!');
+            o.innerHTML = 'Wait...';
+            const img = new Image();
+            img.src = 'https://pollinations.ai/p/' + encodeURIComponent(t) + '?width=512&height=512&seed=' + Math.random();
+            img.style.width = '100%';
+            img.onload = () => { o.innerHTML = ''; o.appendChild(img); };
+        }
+    </script>
+</body>
+</html>
