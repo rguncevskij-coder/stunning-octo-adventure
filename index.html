@@ -1,23 +1,45 @@
-
 <!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="background: #000; color: #0f0; text-align: center; font-family: sans-serif;">
-    <h1>AI GENERATOR</h1>
-    <input type="text" id="i" placeholder="Prompt (English)..." style="width:80%; padding:10px;">
-    <br><br>
-    <button onclick="g()" style="padding:15px 30px; background:#0f0; border:none; font-weight:bold;">ПУСК</button>
-    <div id="out" style="margin-top:20px;"></div>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Generator Pro</title>
+    <style>
+        body { background: #0a0a0a; color: #00ffa3; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .box { background: #111; padding: 20px; border-radius: 20px; border: 1px solid #333; max-width: 500px; margin: auto; }
+        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; }
+        button { background: #00ffa3; color: #000; border: none; padding: 15px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 90%; }
+        button:active { transform: scale(0.98); }
+        #res { margin-top: 20px; min-height: 300px; display: flex; align-items: center; justify-content: center; }
+        img { width: 100%; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,255,163,0.2); }
+        .loader { border: 4px solid #333; border-top: 4px solid #00ffa3; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2>AI IMAGE GENERATOR</h2>
+        <input type="text" id="prompt" placeholder="Опиши картинку (English)...">
+        <button onclick="gen()">СОЗДАТЬ ШЕДЕВР</button>
+        <div id="res">Здесь будет результат</div>
+    </div>
+
     <script>
-        function g(){
-            const t = document.getElementById('i').value;
-            const o = document.getElementById('out');
-            if(!t) return alert('Enter text!');
-            o.innerHTML = 'Wait...';
+        function gen() {
+            const p = document.getElementById('prompt').value;
+            const r = document.getElementById('res');
+            if(!p) return alert("Напиши запрос!");
+
+            r.innerHTML = '<div class="loader"></div>';
+            
+            const seed = Math.floor(Math.random() * 999999);
+            const url = `https://pollinations.ai/p/${encodeURIComponent(p)}?width=1024&height=1024&seed=${seed}&model=flux`;
+
             const img = new Image();
-            img.src = 'https://pollinations.ai/p/' + encodeURIComponent(t) + '?width=512&height=512&seed=' + Math.random();
-            img.style.width = '100%';
-            img.onload = () => { o.innerHTML = ''; o.appendChild(img); };
+            img.src = url;
+            img.onload = () => { r.innerHTML = ''; r.appendChild(img); };
+            img.onerror = () => { r.innerHTML = 'Ошибка. Попробуй другой запрос.'; };
         }
     </script>
 </body>
