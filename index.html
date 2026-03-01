@@ -3,55 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Generator</title>
+    <title>AI Generator Working</title>
     <style>
-        body { background: #000; color: #0f0; font-family: sans-serif; text-align: center; padding: 20px; }
-        .card { background: #111; border: 2px solid #0f0; border-radius: 15px; padding: 20px; max-width: 400px; margin: auto; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #0f0; background: #000; color: #fff; border-radius: 8px; }
-        button { width: 95%; padding: 15px; background: #0f0; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        #output { margin-top: 20px; min-height: 200px; }
-        img { width: 100%; border-radius: 10px; border: 1px solid #333; }
-        .loading { color: #888; font-style: italic; }
+        body { background: #000; color: #00ff88; font-family: sans-serif; text-align: center; padding: 20px; }
+        .main-card { background: #111; border: 2px solid #00ff88; border-radius: 20px; padding: 20px; max-width: 450px; margin: auto; }
+        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; }
+        button { width: 95%; padding: 15px; background: #00ff88; color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        #result { margin-top: 20px; min-height: 300px; display: flex; align-items: center; justify-content: center; }
+        img { width: 100%; border-radius: 15px; box-shadow: 0 0 20px rgba(0,255,136,0.3); }
+        .loading-text { color: #555; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>AI IMAGE GEN</h2>
-        <input type="text" id="userQuery" placeholder="Опиши картинку (на английском)">
-        <button onclick="generate()">СОЗДАТЬ</button>
-        <div id="output">Здесь появится результат</div>
+    <div class="main-card">
+        <h2>НЕЙРОСЕТЬ v1.0</h2>
+        <input type="text" id="aiPrompt" placeholder="Напиши на английском (напр. Space Cat)">
+        <button onclick="startGen()">СФОРМИРОВАТЬ</button>
+        <div id="result">Ожидание запроса...</div>
     </div>
 
     <script>
-        function generate() {
-            const query = document.getElementById('userQuery').value;
-            const output = document.getElementById('output');
+        function startGen() {
+            const text = document.getElementById('aiPrompt').value;
+            const resBox = document.getElementById('result');
             
-            if (!query) {
-                alert("Напиши что-нибудь!");
-                return;
-            }
+            if(!text) return alert("Нужно ввести текст на английском!");
 
-            output.innerHTML = '<p class="loading">Нейросеть рисует... Подожди 5-10 секунд...</p>';
-
-            // Генерируем случайное число, чтобы картинки всегда были разными
-            const randomSeed = Math.floor(Math.random() * 100000);
+            resBox.innerHTML = '<p class="loading-text">ИИ рисует... (обычно 5-10 сек)</p>';
             
-            // Прямая ссылка на генератор
-            const imageUrl = `https://pollinations.ai/p/${encodeURIComponent(query)}?width=1024&height=1024&seed=${randomSeed}&model=flux`;
+            const randomSeed = Math.floor(Math.random() * 1000000);
+            // Прямая ссылка на генерацию Flux (самая стабильная модель)
+            const url = `https://pollinations.ai/p/${encodeURIComponent(text)}?width=1024&height=1024&seed=${randomSeed}&model=flux&nologo=true`;
 
-            // Создаем картинку в памяти, чтобы дождаться загрузки
             const img = new Image();
-            img.src = imageUrl;
+            img.src = url;
 
             img.onload = function() {
-                output.innerHTML = ''; // Убираем текст загрузки
-                output.appendChild(img);
+                resBox.innerHTML = ''; 
+                resBox.appendChild(img);
             };
 
             img.onerror = function() {
-                output.innerHTML = '<p style="color:red">Ошибка. Попробуй другой запрос или проверь интернет.</p>';
+                resBox.innerHTML = '<p style="color:red">Ошибка сервера. Попробуй еще раз через 5 секунд.</p>';
             };
         }
     </script>
